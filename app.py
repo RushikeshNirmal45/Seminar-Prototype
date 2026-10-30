@@ -2175,20 +2175,12 @@ def main() -> None:
 
 
 # ---------------------------------------------------------------------------
-# Vercel Serverless Function Compatibility Entrypoint
+# Vercel Serverless Function Compatibility Entrypoints (WSGI & BaseHTTPRequestHandler)
 # ---------------------------------------------------------------------------
 
 from http.server import BaseHTTPRequestHandler
 
-
-class handler(BaseHTTPRequestHandler):
-    """Vercel Serverless HTTP entrypoint to satisfy Vercel deployment checks."""
-
-    def do_GET(self) -> None:
-        self.send_response(200)
-        self.send_header("Content-Type", "text/html; charset=utf-8")
-        self.end_headers()
-        html_page = """<!DOCTYPE html>
+HTML_PORTAL = """<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -2311,12 +2303,27 @@ class handler(BaseHTTPRequestHandler):
   </div>
 </body>
 </html>"""
-        self.wfile.write(html_page.encode("utf-8"))
 
 
-# Aliases for Vercel WSGI / ASGI entrypoint discovery
-app = handler
-application = handler
+def app(environ, start_response):
+    """WSGI callable application entrypoint for Vercel Python runtime."""
+    status = "200 OK"
+    response_headers = [("Content-Type", "text/html; charset=utf-8")]
+    start_response(status, response_headers)
+    return [HTML_PORTAL.encode("utf-8")]
+
+
+application = app
+
+
+class handler(BaseHTTPRequestHandler):
+    """Vercel BaseHTTPRequestHandler entrypoint to satisfy Vercel serverless checks."""
+
+    def do_GET(self) -> None:
+        self.send_response(200)
+        self.send_header("Content-Type", "text/html; charset=utf-8")
+        self.end_headers()
+        self.wfile.write(HTML_PORTAL.encode("utf-8"))
 
 
 if __name__ == "__main__":
