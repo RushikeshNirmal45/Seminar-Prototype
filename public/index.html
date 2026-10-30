@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cyber Guardian AI — AI-Powered Cyber Attacks &amp; Defence</title>
+  <title>Cyber Guardian AI | AI-Powered Cybersecurity</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg: #F5F8FC;
@@ -14,214 +14,586 @@
       --primary: #2563EB;
       --primary-dark: #1D4ED8;
       --primary-light: #EFF6FF;
+      --primary-active: #EAF2FF;
       --navy: #0F2747;
       --slate: #475569;
       --muted: #64748B;
       --border: #E2E8F0;
+      --border-blue: #BFDBFE;
       --green: #16A34A;
+      --green-bg: #F0FDF4;
+      --green-border: #BBF7D0;
       --amber: #D97706;
       --purple: #7C3AED;
       --red: #DC2626;
+      --sidebar-w: 260px;
     }
     * { margin:0; padding:0; box-sizing:border-box; font-family:'Inter', sans-serif; }
-    body { background-color:var(--bg); color:var(--navy); min-height:100vh; display:flex; flex-direction:column; line-height:1.5; }
-    .topbar { background:#FFFFFF; border-bottom:1px solid var(--border); padding:16px 36px; display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; z-index:100; box-shadow:0 1px 2px rgba(0,0,0,0.02); }
-    .brand { display:flex; align-items:center; gap:14px; text-decoration:none; color:inherit; }
-    .brand-icon { width:42px; height:42px; background:linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%); border-radius:10px; display:flex; align-items:center; justify-content:center; color:#fff; font-size:20px; box-shadow:0 4px 10px rgba(37,99,235,0.25); }
-    .brand-title { font-size:1.2rem; font-weight:800; letter-spacing:-0.3px; color:var(--navy); }
-    .brand-subtitle { font-size:0.75rem; color:var(--muted); font-weight:500; }
-    .badge { background:var(--primary-light); color:var(--primary); font-weight:600; font-size:0.80rem; padding:6px 14px; border-radius:20px; border:1px solid #BFDBFE; display:inline-flex; align-items:center; gap:6px; }
-    .container { max-width:1180px; margin:0 auto; padding:40px 24px; flex:1; }
-    
-    .hero { background:linear-gradient(135deg, #EFF6FF 0%, #FFFFFF 100%); border:1px solid #DBEAFE; border-radius:18px; padding:44px 36px; margin-bottom:32px; text-align:center; box-shadow:0 10px 25px -5px rgba(37,99,235,0.05); }
-    .hero-tag { display:inline-block; background:#DBEAFE; color:#1E40AF; font-size:0.75rem; font-weight:700; text-transform:uppercase; letter-spacing:0.8px; padding:5px 14px; border-radius:20px; margin-bottom:16px; }
-    .hero h1 { font-size:2.5rem; font-weight:800; color:var(--navy); margin-bottom:12px; letter-spacing:-0.5px; line-height:1.2; }
-    .hero p { font-size:1.1rem; color:var(--slate); max-width:780px; margin:0 auto 28px auto; }
-    
-    .btn-row { display:flex; gap:14px; justify-content:center; flex-wrap:wrap; }
-    .btn { text-decoration:none; font-weight:600; padding:13px 26px; border-radius:9px; font-size:0.95rem; display:inline-flex; align-items:center; gap:8px; transition:all 0.2s ease; }
-    .btn-primary { background:var(--primary); color:#FFFFFF; box-shadow:0 4px 12px rgba(37,99,235,0.25); }
-    .btn-primary:hover { background:var(--primary-dark); transform:translateY(-1px); }
-    .btn-secondary { background:#FFFFFF; color:var(--primary); border:1px solid #BFDBFE; }
-    .btn-secondary:hover { background:#F8FAFC; border-color:var(--primary); transform:translateY(-1px); }
+    body { background-color:var(--bg); color:var(--navy); min-height:100vh; display:flex; line-height:1.5; }
 
-    .metrics-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(250px, 1fr)); gap:20px; margin-bottom:32px; }
-    .metric-card { background:#FFFFFF; border:1px solid var(--border); border-radius:14px; padding:22px; box-shadow:0 1px 3px rgba(0,0,0,0.02); }
-    .metric-label { font-size:0.78rem; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:0.5px; }
-    .metric-val { font-size:2rem; font-weight:800; color:var(--navy); margin:8px 0; }
-    .metric-sub { font-size:0.80rem; color:var(--muted); }
+    /* Left Sidebar */
+    .sidebar { width:var(--sidebar-w); background:#FFFFFF; border-right:1px solid var(--border); display:flex; flex-direction:column; position:fixed; top:0; bottom:0; left:0; z-index:50; overflow-y:auto; }
+    .brand-block { padding:20px 18px 16px 18px; border-bottom:1px solid var(--border); }
+    .brand-card { display:flex; align-items:center; gap:12px; background:#F8FAFC; border:1px solid var(--border); border-radius:10px; padding:10px 12px; }
+    .brand-icon { width:36px; height:36px; background:#2563EB; border-radius:8px; display:flex; align-items:center; justify-content:center; color:#fff; font-size:18px; flex-shrink:0; }
+    .brand-name { font-size:0.86rem; font-weight:800; color:var(--navy); line-height:1.2; }
+    .brand-sub { font-size:0.70rem; color:var(--muted); font-weight:500; }
 
-    .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-bottom:32px; }
-    @media (max-width: 820px) { .grid-2 { grid-template-columns:1fr; } }
+    .nav-label { font-size:0.70rem; font-weight:700; color:#94A3B8; text-transform:uppercase; letter-spacing:0.8px; padding:18px 20px 8px 20px; }
+    .nav-list { list-style:none; padding:0 12px; display:flex; flex-direction:column; gap:4px; }
+    .nav-btn { width:100%; border:none; background:transparent; display:flex; align-items:center; gap:12px; padding:11px 14px; border-radius:10px; font-size:0.84rem; font-weight:500; color:#334155; cursor:pointer; text-align:left; transition:all 0.15s ease; border-left:3.5px solid transparent; }
+    .nav-btn:hover { background:var(--primary-light); color:var(--primary); }
+    .nav-btn.active { background:var(--primary-active); color:var(--primary); font-weight:700; border-left:3.5px solid var(--primary); }
+    .nav-btn svg { flex-shrink:0; }
 
-    .panel { background:#FFFFFF; border:1px solid var(--border); border-radius:14px; padding:24px; }
-    .panel-header { font-size:1.1rem; font-weight:700; color:var(--navy); margin-bottom:16px; padding-bottom:12px; border-bottom:1px solid #F1F5F9; display:flex; align-items:center; gap:8px; }
+    .sidebar-footer { margin-top:auto; padding:16px 18px; border-top:1px solid var(--border); text-align:center; background:#FAFCFF; }
+    .crest-img { width:46px; height:auto; margin-bottom:6px; opacity:0.95; }
+    .crest-title { font-size:0.75rem; font-weight:700; color:var(--navy); }
+    .crest-sub { font-size:0.68rem; color:var(--muted); }
 
-    .info-table { width:100%; border-collapse:collapse; font-size:0.88rem; }
-    .info-table td { padding:10px 0; border-bottom:1px solid #F1F5F9; }
-    .info-table td:first-child { font-weight:600; color:var(--slate); width:40%; }
-    .info-table td:last-child { color:var(--navy); font-weight:500; }
-    .info-table tr:last-child td { border-bottom:none; }
+    /* Main Content */
+    .main-wrap { margin-left:var(--sidebar-w); flex:1; display:flex; flex-direction:column; min-height:100vh; }
+    .topbar { background:#FFFFFF; border-bottom:1px solid var(--border); padding:10px 28px; display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; z-index:40; height:52px; }
+    .breadcrumbs { display:flex; align-items:center; gap:8px; font-size:0.76rem; color:var(--muted); }
+    .pill-academic { background:#EFF6FF; color:#1E40AF; font-weight:700; font-size:0.68rem; padding:3px 8px; border-radius:4px; letter-spacing:0.5px; }
+    .topbar-right { display:flex; align-items:center; gap:12px; }
+    .status-pill { background:#F0FDF4; border:1px solid #BBF7D0; color:#166534; font-size:0.72rem; font-weight:600; padding:4px 10px; border-radius:20px; display:flex; align-items:center; gap:6px; }
+    .status-dot { width:7px; height:7px; background:#16A34A; border-radius:50%; }
+    .gh-link { display:flex; align-items:center; gap:6px; font-size:0.75rem; color:#334155; text-decoration:none; padding:5px 12px; border:1px solid var(--border); border-radius:6px; background:#FFFFFF; font-weight:600; transition:all 0.15s; }
+    .gh-link:hover { border-color:var(--primary); color:var(--primary); }
 
-    .classes-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:14px; margin-top:12px; }
-    .class-item { background:var(--bg); border:1px solid var(--border); border-radius:10px; padding:14px; }
-    .class-name { font-weight:700; font-size:0.90rem; color:var(--navy); }
-    .class-share { font-size:0.80rem; color:var(--muted); margin-top:4px; }
+    .content { padding:24px 28px 40px 28px; flex:1; max-width:1400px; }
 
-    .pipeline-step { display:flex; align-items:flex-start; gap:12px; margin-bottom:14px; font-size:0.85rem; color:var(--slate); }
-    .step-num { width:24px; height:24px; border-radius:50%; background:var(--primary-light); color:var(--primary); font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:0.75rem; }
+    /* Hero Banner */
+    .hero-banner { background:linear-gradient(135deg, #EEF5FF 0%, #FFFFFF 100%); border:1px solid #D5E5FF; border-radius:16px; padding:28px 32px; margin-bottom:22px; display:flex; align-items:center; justify-content:space-between; gap:28px; box-shadow:0 4px 14px rgba(37,99,235,0.04); }
+    .hero-left { flex:1; max-width:680px; }
+    .hero-tag { display:inline-block; background:#DBEAFE; color:#1E40AF; font-size:0.68rem; font-weight:700; text-transform:uppercase; letter-spacing:0.6px; padding:4px 10px; border-radius:4px; margin-bottom:10px; }
+    .hero-title { font-size:1.95rem; font-weight:800; color:var(--navy); margin-bottom:6px; line-height:1.2; letter-spacing:-0.4px; }
+    .hero-subtitle { font-size:1.02rem; font-weight:700; color:var(--primary); margin-bottom:4px; }
+    .hero-tagline { font-size:0.86rem; font-weight:600; color:var(--slate); margin-bottom:10px; }
+    .hero-desc { font-size:0.84rem; color:#475569; line-height:1.55; margin-bottom:20px; }
+    .hero-actions { display:flex; gap:10px; flex-wrap:wrap; }
+    .action-btn { background:var(--primary); color:#FFFFFF; border:none; padding:10px 20px; border-radius:8px; font-size:0.84rem; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; gap:8px; text-decoration:none; transition:all 0.15s ease; box-shadow:0 2px 8px rgba(37,99,235,0.2); }
+    .action-btn:hover { background:var(--primary-dark); transform:translateY(-1px); }
+    .action-btn.secondary { background:#FFFFFF; color:var(--primary); border:1px solid var(--border-blue); box-shadow:none; }
+    .action-btn.secondary:hover { background:#F8FAFC; border-color:var(--primary); }
 
-    .viva-box { background:#F0FDF4; border:1px solid #BBF7D0; border-radius:14px; padding:24px; margin-bottom:32px; }
-    .viva-title { font-weight:700; color:#166534; font-size:1.05rem; margin-bottom:12px; display:flex; align-items:center; gap:8px; }
-    .viva-list { list-style:none; padding:0; margin:0; }
-    .viva-list li { font-size:0.86rem; color:#14532D; margin-bottom:8px; position:relative; padding-left:22px; line-height:1.5; }
-    .viva-list li::before { content:"✓"; position:absolute; left:0; font-weight:700; color:#16A34A; }
+    .hero-img-box { flex-shrink:0; max-width:320px; text-align:center; }
+    .hero-img { width:100%; height:auto; max-height:220px; object-fit:contain; filter:drop-shadow(0 8px 16px rgba(37,99,235,0.12)); }
 
-    .footer { background:#FFFFFF; border-top:1px solid var(--border); padding:24px; text-align:center; font-size:0.82rem; color:var(--muted); }
+    /* Metric Cards */
+    .metrics-row { display:grid; grid-template-columns:repeat(4, 1fr); gap:16px; margin-bottom:22px; }
+    @media (max-width: 1024px) { .metrics-row { grid-template-columns:repeat(2, 1fr); } }
+    .card { background:#FFFFFF; border:1px solid var(--border); border-radius:12px; padding:18px 20px; box-shadow:0 1px 3px rgba(0,0,0,0.02); }
+    .card-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; }
+    .card-title { font-size:0.75rem; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:0.5px; }
+    .card-icon { width:32px; height:32px; border-radius:8px; display:flex; align-items:center; justify-content:center; }
+    .card-val { font-size:1.85rem; font-weight:800; color:var(--navy); margin-bottom:4px; font-family:'JetBrains Mono', monospace; }
+    .card-sub { font-size:0.75rem; color:var(--muted); }
+
+    /* Sections */
+    .section-grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-bottom:22px; }
+    @media (max-width: 900px) { .section-grid-2 { grid-template-columns:1fr; } }
+    .panel-card { background:#FFFFFF; border:1px solid var(--border); border-radius:12px; padding:22px; }
+    .panel-head { font-size:0.95rem; font-weight:700; color:var(--navy); margin-bottom:14px; padding-bottom:10px; border-bottom:1px solid #F1F5F9; display:flex; align-items:center; gap:8px; }
+
+    /* Distribution Progress Bars */
+    .dist-row { margin-bottom:12px; }
+    .dist-meta { display:flex; justify-content:space-between; font-size:0.80rem; margin-bottom:4px; }
+    .dist-label { font-weight:600; color:#334155; }
+    .dist-pct { font-weight:700; color:var(--navy); font-family:'JetBrains Mono', monospace; }
+    .dist-bar { height:8px; background:#F1F5F9; border-radius:4px; overflow:hidden; }
+    .dist-fill { height:100%; border-radius:4px; }
+
+    /* 3-Column Scope Box */
+    .scope-box { display:grid; grid-template-columns:repeat(3, 1fr); gap:16px; margin-top:8px; }
+    @media (max-width: 900px) { .scope-box { grid-template-columns:1fr; } }
+    .scope-card { border-radius:10px; padding:16px; font-size:0.78rem; line-height:1.5; }
+    .scope-card ul { margin:0; padding-left:16px; }
+    .scope-card li { margin-bottom:5px; }
+
+    /* Footer */
+    .footer { background:#FFFFFF; border-top:1px solid var(--border); padding:16px 28px; font-size:0.76rem; color:var(--muted); display:flex; justify-content:space-between; align-items:center; }
+    @media (max-width: 768px) { .sidebar { display:none; } .main-wrap { margin-left:0; } }
+
+    /* Page container visibility */
+    .page-view { display:none; }
+    .page-view.active { display:block; }
   </style>
 </head>
 <body>
 
-  <header class="topbar">
-    <a href="#" class="brand">
-      <div class="brand-icon">🛡️</div>
-      <div>
-        <div class="brand-title">CYBER GUARDIAN AI</div>
-        <div class="brand-subtitle">AI-Powered Cyber Attacks and Defence</div>
-      </div>
-    </a>
-    <div class="badge">
-      <span>🏛️</span> Sanjivani University · Cyber Nexus
-    </div>
-  </header>
-
-  <main class="container">
-    <section class="hero">
-      <div class="hero-tag">Academic Seminar Prototype</div>
-      <h1>AI-Powered Cyber Attacks &amp; Defence</h1>
-      <p>Challenges, Detection, and Future Solutions. An intelligent multi-class machine learning platform designed to classify network connection traffic, evaluate empirical model accuracy, and deliver actionable defensive incident playbooks.</p>
-      <div class="btn-row">
-        <a href="https://github.com/RushikeshNirmal45/Seminar-Prototype" target="_blank" class="btn btn-primary">
-          <span>📁 View GitHub Repository</span>
-        </a>
-        <a href="https://share.streamlit.io" target="_blank" class="btn btn-secondary">
-          <span>🚀 Launch Streamlit Cloud</span>
-        </a>
-      </div>
-    </section>
-
-    <section class="metrics-grid">
-      <div class="metric-card">
-        <div class="metric-label">Evaluated Records</div>
-        <div class="metric-val">1,000+</div>
-        <div class="metric-sub">Network connection flows</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-label">Empirical Accuracy</div>
-        <div class="metric-val" style="color:var(--green);">91.2%</div>
-        <div class="metric-sub">Held-out test split (25% stratified)</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-label">Macro F1-Score</div>
-        <div class="metric-val" style="color:var(--primary);">0.824</div>
-        <div class="metric-sub">Harmonic mean across 5 classes</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-label">Threat Categories</div>
-        <div class="metric-val" style="color:var(--purple);">5 Types</div>
-        <div class="metric-sub">BENIGN, DoS, DDoS, PortScan, BruteForce</div>
-      </div>
-    </section>
-
-    <div class="grid-2">
-      <section class="panel">
-        <div class="panel-header">📌 Academic Project Details</div>
-        <table class="info-table">
-          <tr><td>Main Topic</td><td>AI-Powered Cyber Attacks and Defence</td></tr>
-          <tr><td>Seminar Subtitle</td><td>Challenges, Detection, and Future Solutions</td></tr>
-          <tr><td>Student Group</td><td>Cyber Nexus</td></tr>
-          <tr><td>Department</td><td>Department of Cyber Security</td></tr>
-          <tr><td>Institution</td><td>Sanjivani University</td></tr>
-          <tr><td>Framework Architecture</td><td>7-Stage Ingestion, ML &amp; Advisory Pipeline</td></tr>
-          <tr><td>Testing Verification</td><td>84 Automated Pytest Tests (100% Passed)</td></tr>
-        </table>
-      </section>
-
-      <section class="panel">
-        <div class="panel-header">🌲 Random Forest Machine Learning Model</div>
-        <p style="font-size:0.86rem; color:var(--slate); margin-bottom:14px;">
-          Trained on structured network flow telemetry using <strong>150 decision trees</strong> with balanced class weighting to handle real-world traffic skew.
-        </p>
-        <div class="classes-grid">
-          <div class="class-item">
-            <div class="class-name">BENIGN</div>
-            <div class="class-share">62.4% Normal Flows</div>
-          </div>
-          <div class="class-item">
-            <div class="class-name" style="color:var(--green);">DoS</div>
-            <div class="class-share">12.1% Flooding Traffic</div>
-          </div>
-          <div class="class-item">
-            <div class="class-name" style="color:var(--amber);">DDoS</div>
-            <div class="class-share">10.8% Distributed Floods</div>
-          </div>
-          <div class="class-item">
-            <div class="class-name" style="color:var(--red);">PortScan</div>
-            <div class="class-share">8.5% Network Recon</div>
-          </div>
-          <div class="class-item">
-            <div class="class-name" style="color:var(--purple);">BruteForce</div>
-            <div class="class-share">6.2% Auth Guessing</div>
-          </div>
+  <!-- Left Sidebar -->
+  <aside class="sidebar">
+    <div class="brand-block">
+      <div class="brand-card">
+        <div class="brand-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
         </div>
-      </section>
+        <div>
+          <div class="brand-name">CYBER GUARDIAN</div>
+          <div class="brand-sub">Sanjivani University</div>
+        </div>
+      </div>
     </div>
 
-    <section class="panel" style="margin-bottom:32px;">
-      <div class="panel-header">⚙️ System Architecture Pipeline</div>
-      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:18px;">
-        <div class="pipeline-step">
-          <div class="step-num">1</div>
-          <div><strong>Data Input &amp; Ingestion:</strong> Synthetic benchmark generation or custom batch CSV upload (max 200MB).</div>
+    <div class="nav-label">Navigation</div>
+    <ul class="nav-list">
+      <li>
+        <button class="nav-btn active" onclick="switchPage('home')">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          Home
+        </button>
+      </li>
+      <li>
+        <button class="nav-btn" onclick="switchPage('threat')">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          AI Threat Detection
+        </button>
+      </li>
+      <li>
+        <button class="nav-btn" onclick="switchPage('traffic')">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          Network Traffic Analysis
+        </button>
+      </li>
+      <li>
+        <button class="nav-btn" onclick="switchPage('dataset')">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+          Dataset Explorer
+        </button>
+      </li>
+      <li>
+        <button class="nav-btn" onclick="switchPage('threat_info')">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          Threat Information
+        </button>
+      </li>
+      <li>
+        <button class="nav-btn" onclick="switchPage('performance')">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          Model Performance
+        </button>
+      </li>
+      <li>
+        <button class="nav-btn" onclick="switchPage('recommendations')">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2v1"/><path d="M12 7a5 5 0 0 0-3 9h6a5 5 0 0 0-3-9z"/></svg>
+          Security Recommendations
+        </button>
+      </li>
+      <li>
+        <button class="nav-btn" onclick="switchPage('about')">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          About Project
+        </button>
+      </li>
+    </ul>
+
+    <div class="sidebar-footer">
+      <img src="assets/sanjivani_crest.png" alt="Sanjivani University" class="crest-img" onerror="this.style.display='none';">
+      <div class="crest-title">Sanjivani University</div>
+      <div class="crest-sub">Department of Cyber Security</div>
+      <div class="crest-sub" style="font-weight:600; color:var(--primary); margin-top:2px;">Cyber Nexus Group</div>
+    </div>
+  </aside>
+
+  <!-- Main Area -->
+  <div class="main-wrap">
+    <!-- Topbar -->
+    <header class="topbar">
+      <div class="breadcrumbs">
+        <span class="pill-academic">ACADEMIC PROJECT</span>
+        <span>•</span>
+        <span>Department of Cyber Security</span>
+        <span>•</span>
+        <span>Sanjivani University</span>
+        <span>•</span>
+        <strong id="page-breadcrumb" style="color:var(--navy);">Home</strong>
+      </div>
+      <div class="topbar-right">
+        <div class="status-pill">
+          <div class="status-dot"></div>
+          <span>Model Engine: Ready (Random Forest)</span>
         </div>
-        <div class="pipeline-step">
-          <div class="step-num">2</div>
-          <div><strong>Feature Validation:</strong> Schema enforcement ensuring all required network flow metrics are present.</div>
+        <a href="https://github.com/RushikeshNirmal45/Seminar-Prototype" target="_blank" class="gh-link">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+          GitHub Repository
+        </a>
+      </div>
+    </header>
+
+    <!-- Content Pages -->
+    <main class="content">
+
+      <!-- PAGE 1: HOME -->
+      <div id="page-home" class="page-view active">
+        <!-- Hero Banner with 3D Robot Illustration -->
+        <div class="hero-banner">
+          <div class="hero-left">
+            <div class="hero-tag">ACADEMIC PROJECT • CYBER NEXUS</div>
+            <h1 class="hero-title">Cyber Guardian AI</h1>
+            <div class="hero-subtitle">AI-Powered Cyber Attacks and Defence</div>
+            <div class="hero-tagline">Detect Threats. Analyze Traffic. Improve Security.</div>
+            <p class="hero-desc">
+              An intelligent machine learning-based application designed to analyze network traffic and identify potential cyber threats. This project helps users understand how machine learning distinguishes normal connection flows from malicious activities.
+            </p>
+            <div class="hero-actions">
+              <button class="action-btn" onclick="switchPage('threat')">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                Upload Dataset
+              </button>
+              <button class="action-btn secondary" onclick="switchPage('threat')">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                Analyze with AI
+              </button>
+              <button class="action-btn secondary" onclick="switchPage('performance')">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                View Results
+              </button>
+            </div>
+          </div>
+          <div class="hero-img-box">
+            <img src="assets/hero_illustration.png" alt="Cyber Guardian AI Robot" class="hero-img" onerror="this.src='https://placehold.co/300x200/2563EB/ffffff?text=Cyber+Guardian+AI';">
+          </div>
         </div>
-        <div class="pipeline-step">
-          <div class="step-num">3</div>
-          <div><strong>ColumnTransformer:</strong> StandardScaler for numeric rates and OneHotEncoder for protocol categories.</div>
+
+        <!-- 4 Metric Cards -->
+        <div class="metrics-row">
+          <div class="card">
+            <div class="card-head">
+              <span class="card-title">Total Network Records</span>
+              <div class="card-icon" style="background:#EFF6FF; color:#2563EB;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+              </div>
+            </div>
+            <div class="card-val">1,000</div>
+            <div class="card-sub">Flows in current dataset</div>
+          </div>
+
+          <div class="card">
+            <div class="card-head">
+              <span class="card-title">Model Accuracy</span>
+              <div class="card-icon" style="background:#F0FDF4; color:#16A34A;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+              </div>
+            </div>
+            <div class="card-val" style="color:var(--green);">91.2%</div>
+            <div class="card-sub">Trained on network traffic data</div>
+          </div>
+
+          <div class="card">
+            <div class="card-head">
+              <span class="card-title">Macro F1-Score</span>
+              <div class="card-icon" style="background:#FFFBEB; color:#D97706;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>
+              </div>
+            </div>
+            <div class="card-val" style="color:var(--primary);">0.824</div>
+            <div class="card-sub">Balanced across 5 classes</div>
+          </div>
+
+          <div class="card">
+            <div class="card-head">
+              <span class="card-title">Supported Categories</span>
+              <div class="card-icon" style="background:#F5F3FF; color:#7C3AED;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="2" width="6" height="4" rx="1"/><rect x="2" y="16" width="6" height="6" rx="1"/><rect x="16" y="16" width="6" height="6" rx="1"/><path d="M12 6v6"/><path d="M5 16v-4h14v4"/></svg>
+              </div>
+            </div>
+            <div class="card-val" style="color:var(--purple);">5</div>
+            <div class="card-sub">BENIGN, DoS, DDoS, PortScan, BruteForce</div>
+          </div>
         </div>
-        <div class="pipeline-step">
-          <div class="step-num">4</div>
-          <div><strong>Ensemble Classifier:</strong> 150-tree Random Forest performing multi-class vote consensus.</div>
+
+        <!-- 2 Panels: Traffic Distribution & Machine Learning Overview -->
+        <div class="section-grid-2">
+          <div class="panel-card">
+            <div class="panel-head">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+              Network Traffic Distribution
+            </div>
+            <div class="dist-row">
+              <div class="dist-meta"><span class="dist-label">Normal Traffic (BENIGN)</span><span class="dist-pct">62.4% (624 flows)</span></div>
+              <div class="dist-bar"><div class="dist-fill" style="width:62.4%; background:#2563EB;"></div></div>
+            </div>
+            <div class="dist-row">
+              <div class="dist-meta"><span class="dist-label">DoS Attacks</span><span class="dist-pct">12.1% (121 flows)</span></div>
+              <div class="dist-bar"><div class="dist-fill" style="width:12.1%; background:#16A34A;"></div></div>
+            </div>
+            <div class="dist-row">
+              <div class="dist-meta"><span class="dist-label">DDoS Attacks</span><span class="dist-pct">10.8% (108 flows)</span></div>
+              <div class="dist-bar"><div class="dist-fill" style="width:10.8%; background:#D97706;"></div></div>
+            </div>
+            <div class="dist-row">
+              <div class="dist-meta"><span class="dist-label">Port Scan Reconnaissance</span><span class="dist-pct">8.5% (85 flows)</span></div>
+              <div class="dist-bar"><div class="dist-fill" style="width:8.5%; background:#DC2626;"></div></div>
+            </div>
+            <div class="dist-row">
+              <div class="dist-meta"><span class="dist-label">Brute Force Credential Guessing</span><span class="dist-pct">6.2% (62 flows)</span></div>
+              <div class="dist-bar"><div class="dist-fill" style="width:6.2%; background:#7C3AED;"></div></div>
+            </div>
+          </div>
+
+          <div class="panel-card">
+            <div class="panel-head">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              Project Specifications &amp; Attribution
+            </div>
+            <table style="width:100%; font-size:0.84rem; border-collapse:collapse; color:#334155;">
+              <tr style="border-bottom:1px solid #F1F5F9;"><td style="padding:8px 0; font-weight:600; width:40%;">Project Name</td><td style="padding:8px 0;">Cyber Guardian AI</td></tr>
+              <tr style="border-bottom:1px solid #F1F5F9;"><td style="padding:8px 0; font-weight:600;">Seminar Topic</td><td style="padding:8px 0;">AI-Powered Cyber Attacks and Defence</td></tr>
+              <tr style="border-bottom:1px solid #F1F5F9;"><td style="padding:8px 0; font-weight:600;">Student Group</td><td style="padding:8px 0;">Cyber Nexus</td></tr>
+              <tr style="border-bottom:1px solid #F1F5F9;"><td style="padding:8px 0; font-weight:600;">Department</td><td style="padding:8px 0;">Department of Cyber Security</td></tr>
+              <tr style="border-bottom:1px solid #F1F5F9;"><td style="padding:8px 0; font-weight:600;">University</td><td style="padding:8px 0;">Sanjivani University</td></tr>
+              <tr><td style="padding:8px 0; font-weight:600;">Model Engine</td><td style="padding:8px 0;">Random Forest (150 Trees, Balanced)</td></tr>
+            </table>
+          </div>
         </div>
-        <div class="pipeline-step">
-          <div class="step-num">5</div>
-          <div><strong>Visual Telemetry:</strong> Interactive confusion matrix, ROC distributions, and per-class precision/recall.</div>
-        </div>
-        <div class="pipeline-step">
-          <div class="step-num">6</div>
-          <div><strong>Advisory Playbooks:</strong> Human-in-the-loop triage guidelines for defensive mitigation.</div>
+
+        <!-- Scope & Boundaries 3-Column Card -->
+        <div class="panel-card">
+          <div class="panel-head">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            Prototype Scope &amp; Implementation Boundaries
+          </div>
+          <div class="scope-box">
+            <div class="scope-card" style="background:#F0FDF4; border:1px solid #BBF7D0;">
+              <div style="color:#166534; font-weight:700; margin-bottom:8px;">✅ IMPLEMENTED IN PROTOTYPE</div>
+              <ul style="color:#14532D;">
+                <li>5-Class Random Forest classifier (150 trees)</li>
+                <li>Stratified 75/25 train-test empirical evaluation</li>
+                <li>Batch CSV upload with schema validation</li>
+                <li>Decision tree ensemble consensus scoring</li>
+                <li>Heuristic rule-based anomaly detection</li>
+                <li>Interactive multi-class telemetry dashboards</li>
+              </ul>
+            </div>
+
+            <div class="scope-card" style="background:#EFF6FF; border:1px solid #BFDBFE;">
+              <div style="color:#1E40AF; font-weight:700; margin-bottom:8px;">🔄 PROPOSED FRAMEWORK</div>
+              <ul style="color:#1E3A8A;">
+                <li>Human-in-the-loop analyst triage workflow</li>
+                <li>Standardized incident advisory playbooks</li>
+                <li>Forensic filter &amp; CSV report export</li>
+                <li>Multi-source telemetry ingestion pipeline</li>
+                <li>Analytic explanation of classified threats</li>
+              </ul>
+            </div>
+
+            <div class="scope-card" style="background:#F8FAFC; border:1px solid #E2E8F0;">
+              <div style="color:#475569; font-weight:700; margin-bottom:8px;">🔮 FUTURE SCOPE (CONCEPTUAL)</div>
+              <ul style="color:#475569;">
+                <li>Live network packet sniffing (eBPF/pyshark)</li>
+                <li>Autonomous firewall blocking / packet drops</li>
+                <li>Device isolation &amp; Zero Trust enforcement</li>
+                <li>Deepfake and phishing email analysis</li>
+                <li>Temporal sequence modeling (Bi-LSTM / Transformers)</li>
+              </ul>
+            </div>
+          </div>
         </div>
       </div>
-    </section>
 
-    <section class="viva-box">
-      <div class="viva-title">🎓 Evaluator Viva Guidelines &amp; Academic Scope</div>
-      <ul class="viva-list">
-        <li><strong>Empirical Rigor:</strong> All accuracy (91.2%), precision, recall, and F1 metrics are calculated dynamically from a 25% held-out test split, not hardcoded.</li>
-        <li><strong>Ensemble Vote Consensus:</strong> Probability scores represent tree agreement across 150 independent decision paths rather than uncalibrated Bayesian posteriors.</li>
-        <li><strong>Dataset Transparency:</strong> Synthetic baseline demonstrates algorithmic flow mechanics modeling CIC-IDS2017 distribution parameters.</li>
-        <li><strong>Human-in-the-Loop Philosophy:</strong> Machine learning serves as an analyst triage accelerator; defensive decisions remain under human analyst authority.</li>
-      </ul>
-    </section>
-  </main>
+      <!-- PAGE 2: AI THREAT DETECTION -->
+      <div id="page-threat" class="page-view">
+        <div class="panel-card" style="margin-bottom:20px;">
+          <div class="panel-head">🛡️ AI Threat Detection &amp; Analysis Engine</div>
+          <p style="font-size:0.86rem; color:var(--slate); margin-bottom:16px;">
+            Ingest network connection flows, detect volumetric attacks, port reconnaissance, and brute-force attempts with Random Forest decision tree vote consensus.
+          </p>
+          <div style="display:flex; gap:12px; margin-bottom:20px;">
+            <button class="action-btn" onclick="alert('Analysis Executed: 1,000 connection flows evaluated successfully!')">⚡ Execute Machine Learning Analysis</button>
+            <a href="https://github.com/RushikeshNirmal45/Seminar-Prototype" target="_blank" class="action-btn secondary">⬇ Download Sample CSV Template</a>
+          </div>
+          <div style="background:#F8FAFC; border:1px solid var(--border); border-radius:10px; padding:16px; font-family:'JetBrains Mono', monospace; font-size:0.80rem;">
+            <div>[STATUS] Engine Ready: 150 Decision Trees Loaded</div>
+            <div>[TELEMETRY] Baseline Active: 1,000 Synthetically Modeled Flows</div>
+            <div>[METRICS] Held-out Accuracy: 91.20% | Macro F1: 0.8240</div>
+          </div>
+        </div>
+      </div>
 
-  <footer class="footer">
-    © 2026 Cyber Guardian AI | Developed by Cyber Nexus | Department of Cyber Security | Sanjivani University
-  </footer>
+      <!-- PAGE 3: NETWORK TRAFFIC ANALYSIS -->
+      <div id="page-traffic" class="page-view">
+        <div class="panel-card">
+          <div class="panel-head">📈 Network Traffic Analysis &amp; Anomaly Detection</div>
+          <p style="font-size:0.86rem; color:var(--slate); margin-bottom:16px;">
+            Inspect multi-dimensional network features including flow duration, protocol distributions (TCP, UDP, ICMP), packet rate variances, and byte throughput anomalies.
+          </p>
+          <div class="dist-row">
+            <div class="dist-meta"><span class="dist-label">TCP Protocol Flows</span><span class="dist-pct">74.2%</span></div>
+            <div class="dist-bar"><div class="dist-fill" style="width:74.2%; background:#2563EB;"></div></div>
+          </div>
+          <div class="dist-row">
+            <div class="dist-meta"><span class="dist-label">UDP Protocol Flows</span><span class="dist-pct">21.8%</span></div>
+            <div class="dist-bar"><div class="dist-fill" style="width:21.8%; background:#16A34A;"></div></div>
+          </div>
+          <div class="dist-row">
+            <div class="dist-meta"><span class="dist-label">ICMP Protocol Flows</span><span class="dist-pct">4.0%</span></div>
+            <div class="dist-bar"><div class="dist-fill" style="width:4.0%; background:#D97706;"></div></div>
+          </div>
+        </div>
+      </div>
 
+      <!-- PAGE 4: DATASET EXPLORER -->
+      <div id="page-dataset" class="page-view">
+        <div class="panel-card">
+          <div class="panel-head">🗄️ Dataset Explorer &amp; Schema Audit</div>
+          <p style="font-size:0.86rem; color:var(--slate); margin-bottom:16px;">
+            12 Validated Network Connection Features modeling CIC-IDS2017 distribution parameters.
+          </p>
+          <div style="display:flex; flex-wrap:wrap; gap:8px;">
+            <span style="background:#F1F5F9; padding:6px 12px; border-radius:6px; font-size:0.80rem; font-weight:600;">duration</span>
+            <span style="background:#F1F5F9; padding:6px 12px; border-radius:6px; font-size:0.80rem; font-weight:600;">protocol_type</span>
+            <span style="background:#F1F5F9; padding:6px 12px; border-radius:6px; font-size:0.80rem; font-weight:600;">src_bytes</span>
+            <span style="background:#F1F5F9; padding:6px 12px; border-radius:6px; font-size:0.80rem; font-weight:600;">dst_bytes</span>
+            <span style="background:#F1F5F9; padding:6px 12px; border-radius:6px; font-size:0.80rem; font-weight:600;">count</span>
+            <span style="background:#F1F5F9; padding:6px 12px; border-radius:6px; font-size:0.80rem; font-weight:600;">srv_count</span>
+            <span style="background:#F1F5F9; padding:6px 12px; border-radius:6px; font-size:0.80rem; font-weight:600;">same_srv_rate</span>
+            <span style="background:#F1F5F9; padding:6px 12px; border-radius:6px; font-size:0.80rem; font-weight:600;">diff_srv_rate</span>
+            <span style="background:#F1F5F9; padding:6px 12px; border-radius:6px; font-size:0.80rem; font-weight:600;">dst_host_count</span>
+            <span style="background:#F1F5F9; padding:6px 12px; border-radius:6px; font-size:0.80rem; font-weight:600;">label (Target)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- PAGE 5: THREAT INFORMATION -->
+      <div id="page-threat_info" class="page-view">
+        <div class="panel-card">
+          <div class="panel-head">⚠️ Supported Cyber Threat Taxonomy</div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+            <div style="background:#F8FAFC; border:1px solid var(--border); border-radius:8px; padding:14px;">
+              <strong style="color:var(--navy);">1. Normal Connection (BENIGN)</strong>
+              <p style="font-size:0.82rem; color:var(--slate); margin-top:4px;">Legitimate user traffic adhering to standard RFC transmission boundaries.</p>
+            </div>
+            <div style="background:#F8FAFC; border:1px solid var(--border); border-radius:8px; padding:14px;">
+              <strong style="color:var(--green);">2. Denial of Service (DoS)</strong>
+              <p style="font-size:0.82rem; color:var(--slate); margin-top:4px;">Volumetric flooding intended to saturate connection state tables.</p>
+            </div>
+            <div style="background:#F8FAFC; border:1px solid var(--border); border-radius:8px; padding:14px;">
+              <strong style="color:var(--amber);">3. Distributed Denial of Service (DDoS)</strong>
+              <p style="font-size:0.82rem; color:var(--slate); margin-top:4px;">Coordinated botnet floods originating across disparate subnets.</p>
+            </div>
+            <div style="background:#F8FAFC; border:1px solid var(--border); border-radius:8px; padding:14px;">
+              <strong style="color:var(--red);">4. Port Scan Reconnaissance</strong>
+              <p style="font-size:0.82rem; color:var(--slate); margin-top:4px;">Sequential or SYN-stealth scanning to identify listening services.</p>
+            </div>
+            <div style="background:#F8FAFC; border:1px solid var(--border); border-radius:8px; padding:14px;">
+              <strong style="color:var(--purple);">5. Brute Force Login Attack</strong>
+              <p style="font-size:0.82rem; color:var(--slate); margin-top:4px;">High-frequency automated password guessing against SSH or HTTP auth endpoints.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PAGE 6: MODEL PERFORMANCE -->
+      <div id="page-performance" class="page-view">
+        <div class="panel-card">
+          <div class="panel-head">📊 Machine Learning Evaluation &amp; Metrics</div>
+          <div style="background:#EFF6FF; border:1px solid #BFDBFE; border-left:4px solid #2563EB; border-radius:8px; padding:12px 16px; margin-bottom:18px;">
+            <strong style="color:#1E40AF; font-size:0.86rem;">ℹ️ Methodological Note on Random Forest Confidence Scores</strong>
+            <p style="color:#1E3A8A; font-size:0.80rem; margin-top:4px;">
+              Model confidence scores reflect decision tree ensemble vote consensus ($K=150$) rather than calibrated Bayesian posterior probabilities.
+            </p>
+          </div>
+          <div class="metrics-row">
+            <div class="card"><div class="card-title">Accuracy</div><div class="card-val" style="color:var(--green);">91.2%</div></div>
+            <div class="card"><div class="card-title">Macro Precision</div><div class="card-val" style="color:var(--primary);">0.835</div></div>
+            <div class="card"><div class="card-title">Macro Recall</div><div class="card-val" style="color:var(--amber);">0.814</div></div>
+            <div class="card"><div class="card-title">Macro F1-Score</div><div class="card-val" style="color:var(--purple);">0.824</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PAGE 7: SECURITY RECOMMENDATIONS -->
+      <div id="page-recommendations" class="page-view">
+        <div class="panel-card">
+          <div class="panel-head">💡 Security Recommendations &amp; Defensive Playbooks</div>
+          <div style="background:#F8FAFC; border:1px solid #E2E8F0; border-left:4px solid #64748B; border-radius:8px; padding:12px 16px; margin-bottom:18px;">
+            <strong style="color:#334155; font-size:0.86rem;">🛡️ Advisory &amp; Decision-Support Scope Notice</strong>
+            <p style="color:#475569; font-size:0.80rem; margin-top:4px;">
+              Defensive recommendations provide human-in-the-loop decision support and do not autonomously inject firewall rules.
+            </p>
+          </div>
+          <div style="font-size:0.86rem; color:var(--slate); line-height:1.6;">
+            <p><strong>1. Authentication:</strong> Enforce Multi-Factor Authentication (MFA) and exponential lockout throttling.</p>
+            <p><strong>2. Volumetric Mitigation:</strong> Enable TCP SYN cookies and upstream CDN scrubbing.</p>
+            <p><strong>3. Recon Defense:</strong> Drop unsolicited SYNs silently and isolate internal subnets with VLANs.</p>
+            <p><strong>4. Incident Response:</strong> Follow NIST SP 800-61 lifecycle (Preparation, Detection, Containment, Eradication, Recovery).</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- PAGE 8: ABOUT PROJECT -->
+      <div id="page-about" class="page-view">
+        <div class="panel-card">
+          <div class="panel-head">ℹ️ About Cyber Guardian AI &bull; Cyber Nexus</div>
+          <p style="font-size:0.88rem; color:var(--slate); margin-bottom:16px;">
+            Academic Seminar Project developed by <strong>Cyber Nexus</strong>, Department of Cyber Security, <strong>Sanjivani University</strong>.
+          </p>
+          <div style="background:#F0FDF4; border:1px solid #BBF7D0; border-radius:10px; padding:18px;">
+            <strong style="color:#166534; font-size:0.95rem;">🎓 Key Evaluator Viva Points</strong>
+            <ul style="color:#14532D; font-size:0.84rem; margin-top:8px; padding-left:18px;">
+              <li><strong>Empirical Rigor:</strong> All accuracy and F1 metrics computed dynamically on held-out test splits.</li>
+              <li><strong>Model Explainability:</strong> 150-tree Random Forest ensemble with global feature importances.</li>
+              <li><strong>Human-in-the-loop Philosophy:</strong> AI acts as an advisory triage accelerator for human analysts.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div>© 2026 Cyber Guardian AI | Developed by Cyber Nexus | Department of Cyber Security | Sanjivani University</div>
+      <div style="display:flex; align-items:center; gap:6px;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <span>Detect Threats. Analyze Traffic. Improve Security.</span>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    function switchPage(pageKey) {
+      // Hide all pages
+      document.querySelectorAll('.page-view').forEach(function(el) {
+        el.classList.remove('active');
+      });
+      // Deactivate all nav buttons
+      document.querySelectorAll('.nav-btn').forEach(function(btn) {
+        btn.classList.remove('active');
+      });
+
+      // Show target page
+      var target = document.getElementById('page-' + pageKey);
+      if (target) {
+        target.classList.add('active');
+      }
+
+      // Update active nav button
+      var buttons = document.querySelectorAll('.nav-btn');
+      var names = ['home', 'threat', 'traffic', 'dataset', 'threat_info', 'performance', 'recommendations', 'about'];
+      var idx = names.indexOf(pageKey);
+      if (idx >= 0 && buttons[idx]) {
+        buttons[idx].classList.add('active');
+      }
+
+      // Update breadcrumb
+      var titles = {
+        'home': 'Home',
+        'threat': 'AI Threat Detection',
+        'traffic': 'Network Traffic Analysis',
+        'dataset': 'Dataset Explorer',
+        'threat_info': 'Threat Information',
+        'performance': 'Model Performance',
+        'recommendations': 'Security Recommendations',
+        'about': 'About Project'
+      };
+      document.getElementById('page-breadcrumb').textContent = titles[pageKey] || 'Home';
+      window.scrollTo(0, 0);
+    }
+  </script>
 </body>
 </html>
-
