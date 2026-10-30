@@ -375,7 +375,12 @@ def preprocess_dataframe(
     # Fill missing values
     for col in df.select_dtypes(include=[np.number]).columns:
         if df[col].isna().any():
-            df[col] = df[col].fillna(df[col].median())
+            if df[col].notna().any():
+                med = df[col].median()
+                fill_val = 0.0 if pd.isna(med) else med
+            else:
+                fill_val = 0.0
+            df[col] = df[col].fillna(fill_val)
 
     for col in df.select_dtypes(include="object").columns:
         if col == LABEL_COLUMN:
@@ -439,4 +444,131 @@ def get_dataset_summary(df: pd.DataFrame) -> dict:
         summary["class_distribution"] = df[LABEL_COLUMN].value_counts().to_dict()
         summary["num_classes"] = df[LABEL_COLUMN].nunique()
     return summary
+
+
+# ---------------------------------------------------------------------------
+# Auxiliary Telemetry & Telemetry Anomaly Analysis
+# ---------------------------------------------------------------------------
+
+def get_numeric_correlation(
+    df: pd.DataFrame,
+    columns: Optional[list] = None,
+) -> pd.DataFrame:
+    """
+    Compute pairwise Pearson correlation for numeric columns in the DataFrame.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        Input telemetry DataFrame.
+    columns : Optional[list]
+        Specific numeric columns to correlate (default: all numeric).
+
+    Returns
+    -------
+    pd.DataFrame
+        Correlation matrix with rounded Pearson values.
+    """
+    if df is None or df.empty:
+        return pd.DataFrame()
+
+    numeric_df = df.select_dtypes(include=[np.number])
+    if columns:
+        valid_cols = [c for c in columns if c in numeric_df.columns]
+        numeric_df = numeric_df[valid_cols]
+
+    if numeric_df.empty or len(numeric_df.columns) < 2:
+        return pd.DataFrame()
+
+    return numeric_df.corr().round(3)
+
+
+def detect_suspicious_patterns(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Apply rule-based heuristics to identify anomalous network traffic flows.
+
+    Returns a copy of DataFrame with a 'suspicion_reasons' column describing
+    any triggered anomaly rules.
+    """
+    if df is None or df.empty:
+        return pd.DataFrame()
+
+    results = df.copy()
+    flags = []
+
+    for _, row in results.iterrows():
+        reasons = []
+        # Port scan indicator: rapid connection to diverse services
+        diff_srv = row.get("diff_srv_rate", 0)
+        srv_count = row.get("srv_count", 99)
+        if diff_srv > 0.6 and srv_count <= 5:
+            reasons.append("High Service Diversity (Reconnaissance / PortScan)")
+
+        # Flooding indicator: high connection count to identical service
+        count = row.get("count", 0)
+        same_srv = row.get("same_srv_rate", 0)
+        if count > 150 and same_srv > 0.8:
+            reasons.append("Connection Volume Burst (DoS/DDoS Flooding)")
+
+        # Authentication anomaly: failed logins or compromised indicators
+        failed_logins = row.get("num_failed_logins", 0)
+        compromised = row.get("num_compromised", 0)
+        if failed_logins >= 2:
+            reasons.append(f"Multiple Authentication Failures ({int(failed_logins)} failed logins)")
+        if compromised > 0:
+            reasons.append(f"Host Compromise Indicator ({int(compromised)} events)")
+
+        # Land attack anomaly: source and destination identical
+        land = row.get("land", 0)
+        if land == 1:
+            reasons.append("Land Attack Anomaly (Spoofed loopback connection)")
+
+        # Fragmentation anomaly
+        wrong_frag = row.get("wrong_fragment", 0)
+        if wrong_frag > 0:
+            reasons.append(f"Fragment Anomaly ({int(wrong_frag)} corrupted fragments)")
+
+        flags.append("; ".join(reasons) if reasons else "Normal")
+
+    results["suspicion_reasons"] = flags
+    return results
+
+
+def generate_sample_csv(
+    has_label: bool = True,
+    n_records: int = 50,
+    n_rows: Optional[int] = None,
+) -> bytes:
+    """
+    Generate sample CSV bytes for testing upload functionality.
+
+    Parameters
+    ----------
+    has_label : bool
+        Whether to include the ground-truth 'label' column.
+    n_records : int
+        Number of rows to generate.
+    n_rows : Optional[int]
+        Alias for n_records for caller compatibility.
+
+    Returns
+    -------
+    bytes
+        UTF-8 encoded CSV byte buffer.
+    """
+    if n_rows is not None:
+        n_records = n_rows
+    n_benign = max(10, int(n_records * 0.6))
+    n_attack = max(10, n_records - n_benign)
+    df = generate_synthetic_dataset(
+        n_benign=n_benign,
+        n_attack=n_attack,
+        random_state=123,
+    ).head(n_records)
+
+    if not has_label and LABEL_COLUMN in df.columns:
+        df = df.drop(columns=[LABEL_COLUMN])
+
+    return df.to_csv(index=False).encode("utf-8")
+
 

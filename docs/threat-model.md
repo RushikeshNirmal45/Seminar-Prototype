@@ -49,3 +49,4 @@ Cyber Guardian AI processes network flow telemetry to assist analysts in detecti
 - **Definition**: Malicious intrusion classified as benign traffic.
 - **Operational Impact**: High risk of lateral movement, ransomware execution, or persistent data exfiltration.
 - **Mitigation**: Defense-in-depth architecture; complementary signature IDS; continuous monitoring.
+

@@ -11,17 +11,18 @@ The testing suite for **Cyber Guardian AI** covers unit functionality, data vali
 python -m pytest tests/ -v --tb=short
 ```
 
-- **Total Test Cases**: 71
-- **Passed**: 71
+- **Total Test Cases**: 72
+- **Passed**: 72
+- **Warnings**: 1 (handled `UserWarning` during single-class evaluation test)
 - **Failed**: 0
-- **Duration**: ~40 seconds
+- **Duration**: ~5–40 seconds
 - **Platform**: Windows / Python 3.12.10
 
 ---
 
 ## Breakdown of Test Suites
 
-### 1. Data Processing Tests (`tests/test_data_processing.py` — 26 tests)
+### 1. Data Processing Tests (`tests/test_data_processing.py` — 27 tests)
 - **Synthetic Data Generation**:
   - Verification of expected column schemas and data types.
   - Verification of class distribution and minimum instance counts.
@@ -61,3 +62,4 @@ python -m pytest tests/ -v --tb=short
 - Integration check on unlabelled batch prediction.
 - Validation of risk level assignment (`LOW` vs. `HIGH`) and confidence scores.
 - Summary metric calculations (aggregate counts, percentage consistency).
+

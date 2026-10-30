@@ -64,3 +64,4 @@ flowchart TD
 | `src/detection.py` | Workflow orchestration, batch risk scoring | `run_training()`, `run_evaluation()`, `run_prediction()`, `get_threat_summary()` |
 | `src/evaluation.py` | Metric computation, classification reports | `compute_metrics()`, `format_per_class_metrics()`, `interpret_metrics()` |
 | `src/visualizations.py` | Plotly & Matplotlib dashboard charts | `plot_confusion_matrix()`, `plot_risk_gauge()`, `plot_per_class_metrics()` |
+

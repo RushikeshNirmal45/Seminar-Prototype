@@ -165,6 +165,14 @@ class TestPreprocessing:
         assert err is None
         assert not result["duration"].isnull().any()
 
+    def test_fills_all_nan_numeric_column(self, small_valid_df):
+        df_all_nan = small_valid_df.copy()
+        df_all_nan["urgent"] = np.nan
+        result, err = preprocess_dataframe(df_all_nan, require_label=True)
+        assert err is None
+        assert not result["urgent"].isnull().any()
+        assert (result["urgent"] == 0.0).all()
+
     def test_fills_inf_values(self, small_valid_df):
         df_with_inf = small_valid_df.copy()
         df_with_inf.loc[0, "src_bytes"] = np.inf

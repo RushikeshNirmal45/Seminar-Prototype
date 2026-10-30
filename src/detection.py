@@ -34,6 +34,66 @@ logger = logging.getLogger(__name__)
 
 
 # ---------------------------------------------------------------------------
+# Threat Knowledge Base & Triage Metadata
+# ---------------------------------------------------------------------------
+
+THREAT_METADATA: Dict[str, Dict[str, str]] = {
+    "BENIGN": {
+        "category": "Normal Network Traffic",
+        "severity": "LOW",
+        "description": "Standard network communication exhibiting normal bidirectional byte flow, typical duration, and service distribution without flood or intrusion patterns.",
+        "indicators": "Normal duration (>1s), balanced source/destination bytes, low connection counts (<50), zero failed logins.",
+        "impact": "None. Legitimate operational network traffic.",
+        "recommended_action": "No immediate defensive action required. Maintain standard baseline telemetry logging and monitor for unusual behavioral shifts.",
+    },
+    "DoS": {
+        "category": "Denial of Service (Volume/State Exhaustion)",
+        "severity": "HIGH",
+        "description": "High-volume connection flood originating from a single or concentrated source designed to exhaust server memory, connection tables, or CPU.",
+        "indicators": "Extremely high connection count (>200), high same-service rate (>0.85), short flow duration (<0.5s), small byte payloads.",
+        "impact": "Service degradation, connection timeouts, daemon crashes, unresponsiveness for legitimate users.",
+        "recommended_action": "Implement rate limiting at edge firewall/router, enable TCP SYN cookies, block offending source IP address, and inspect edge connection limits.",
+    },
+    "DDoS": {
+        "category": "Distributed Denial of Service",
+        "severity": "CRITICAL",
+        "description": "Coordinated flood from multiple distributed endpoints targeting network infrastructure or application ports to cause widespread service unavailability.",
+        "indicators": "Massive influx of connections, concentrated dst_host_count, near-identical service requests across distributed sessions.",
+        "impact": "Complete service outage, upstream transit link saturation, firewall state-table exhaustion, collateral service impairment.",
+        "recommended_action": "Divert traffic through upstream BGP Anycast scrubbing center / CDN DDoS mitigation, engage ISP DDoS protection, enforce edge geo/rate-limiting.",
+    },
+    "PortScan": {
+        "category": "Reconnaissance / Network Probing",
+        "severity": "MEDIUM",
+        "description": "Systematic scanning of host IP addresses and ports to map active listening services, vulnerable daemons, and network topology prior to exploitation.",
+        "indicators": "Rapid connections with high diff_srv_rate (>0.7), low srv_count (<5), very low dwell time per port, same source port reuse.",
+        "impact": "Exposure of open ports, daemon versions, and perimeter defense gaps to adversary reconnaissance.",
+        "recommended_action": "Temporarily block or quarantine scanning source IP, close non-essential listening ports, verify firewall ACL rules, and alert SOC tier-1 analyst.",
+    },
+    "BruteForce": {
+        "category": "Credential Access / Authentication Attack",
+        "severity": "HIGH",
+        "description": "Automated, repeated authentication attempts against network login services (SSH, FTP, RDP, Web) to guess usernames and passwords.",
+        "indicators": "Repeated connection sessions to authentication ports, elevated num_failed_logins (>=3), high hot count, repeated access attempts.",
+        "impact": "Unauthorized account compromise, privilege escalation, persistent access, internal network pivot.",
+        "recommended_action": "Enforce account lockout / rate-limiting, terminate active compromised sessions, enforce Multi-Factor Authentication (MFA), deploy Fail2Ban.",
+    },
+}
+
+
+def get_threat_metadata(label: str) -> Dict[str, str]:
+    """Return threat metadata dictionary for a given label."""
+    return THREAT_METADATA.get(str(label), {
+        "category": "Unclassified Traffic",
+        "severity": "MEDIUM",
+        "description": f"Traffic pattern classified as {label}.",
+        "indicators": "Statistical divergence from normal baseline flows.",
+        "impact": "Requires SOC analyst investigation.",
+        "recommended_action": "Inspect packet headers and protocol telemetry for unusual anomalies.",
+    })
+
+
+# ---------------------------------------------------------------------------
 # Result containers
 # ---------------------------------------------------------------------------
 
@@ -200,6 +260,39 @@ def run_prediction(
     result_df["risk_level"] = result_df["predicted_label"].apply(
         lambda lbl: "LOW" if str(lbl).upper() == "BENIGN" else "HIGH"
     )
+
+    # Attach threat category, explanation, and recommended action
+    categories = []
+    explanations = []
+    actions = []
+
+    for idx, label in enumerate(y_pred):
+        meta = get_threat_metadata(str(label))
+        categories.append(meta.get("category", "Traffic Flow"))
+        actions.append(meta.get("recommended_action", "Review traffic telemetry."))
+
+        row = cleaned_df.iloc[idx]
+        lbl_str = str(label).upper()
+        if lbl_str == "BENIGN":
+            explanations.append("Standard bidirectional telemetry; no flooding, scanning, or authentication anomalies observed.")
+        elif lbl_str == "DOS":
+            c_val = row.get("count", 0)
+            explanations.append(f"Elevated connection density (count={c_val:.0f}) and short dwell time consistent with volume/state exhaustion flood.")
+        elif lbl_str == "DDOS":
+            dst_host = row.get("dst_host_count", 0)
+            explanations.append(f"High destination host concentration (dst_host_count={dst_host:.0f}) characteristic of coordinated distributed flooding.")
+        elif lbl_str == "PORTSCAN":
+            diff_srv = row.get("diff_srv_rate", 0)
+            explanations.append(f"Disproportionate service variation (diff_srv_rate={diff_srv:.2f}) across short-duration connections indicating port reconnaissance.")
+        elif lbl_str == "BRUTEFORCE":
+            failed = row.get("num_failed_logins", 0)
+            explanations.append(f"Repeated authentication challenges detected (num_failed_logins={failed:.0f}) indicating credential brute-forcing.")
+        else:
+            explanations.append(f"Flagged by classifier based on similarity to known {label} training vector patterns.")
+
+    result_df["threat_category"] = categories
+    result_df["explanation"] = explanations
+    result_df["recommended_action"] = actions
 
     return PredictionResult(
         success=True,

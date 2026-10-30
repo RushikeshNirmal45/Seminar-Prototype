@@ -23,3 +23,4 @@ Cyber Guardian AI is designed as an educational and research prototype. In adher
 
 ### 6. Probability Calibration
 - Decision forest probability estimates (`predict_proba`) represent tree ensemble voting proportions, not formally calibrated Bayesian posterior probabilities of an ongoing intrusion. They should be interpreted as relative confidence indicators rather than absolute risk values.
+

@@ -63,4 +63,5 @@ Cyber Guardian AI follows a structured 7-stage research and implementation pipel
 
 ### Phase 7: Verification & Feedback
 - Implemented automated test coverage across 71 unit and integration test cases.
-- Validated error boundaries, shape consistency, probability calibrations, and missing-feature fallbacks.
+- Validated error boundaries, shape consistency, prediction confidence bounds, and missing-feature fallbacks.
+
