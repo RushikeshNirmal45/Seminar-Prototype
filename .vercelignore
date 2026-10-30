@@ -1,0 +1,5 @@
+app.py
+src/
+tests/
+requirements.txt
+.streamlit/
