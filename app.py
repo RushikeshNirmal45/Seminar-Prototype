@@ -1207,6 +1207,61 @@ def page_home() -> None:
             </table>
             """, unsafe_allow_html=True)
 
+    # Implemented Features vs Proposed Framework vs Future Scope
+    with st.container(border=True):
+        scope_icon = _svg_icon("shield", size=17, color="#2563EB")
+        st.markdown(f'<div class="panel-card-header">{scope_icon} Prototype Scope &amp; Implementation Boundaries</div>', unsafe_allow_html=True)
+        col_imp, col_prop, col_fut = st.columns(3)
+
+        with col_imp:
+            st.markdown("""
+            <div style="background:#F0FDF4; border:1px solid #BBF7D0; border-radius:8px; padding:12px; height:100%;">
+                <div style="color:#166534; font-weight:700; font-size:0.84rem; margin-bottom:6px;">
+                    ✅ IMPLEMENTED IN PROTOTYPE
+                </div>
+                <ul style="font-size:0.78rem; color:#14532D; margin:0; padding-left:16px; line-height:1.5;">
+                    <li>5-Class Random Forest classifier (150 trees)</li>
+                    <li>Stratified 75/25 train-test empirical evaluation</li>
+                    <li>Batch CSV upload with schema validation</li>
+                    <li>Decision tree ensemble consensus scoring</li>
+                    <li>Heuristic rule-based anomaly detection</li>
+                    <li>Interactive multi-class telemetry dashboards</li>
+                </ul>
+            </div>
+            """, unsafe_allow_html=True)
+
+        with col_prop:
+            st.markdown("""
+            <div style="background:#EFF6FF; border:1px solid #BFDBFE; border-radius:8px; padding:12px; height:100%;">
+                <div style="color:#1E40AF; font-weight:700; font-size:0.84rem; margin-bottom:6px;">
+                    🔄 PROPOSED FRAMEWORK
+                </div>
+                <ul style="font-size:0.78rem; color:#1E3A8A; margin:0; padding-left:16px; line-height:1.5;">
+                    <li>Human-in-the-loop analyst triage workflow</li>
+                    <li>Standardized incident advisory playbooks</li>
+                    <li>Forensic filter &amp; CSV report export</li>
+                    <li>Multi-source telemetry ingestion pipeline</li>
+                    <li>Analytic explanation of classified threats</li>
+                </ul>
+            </div>
+            """, unsafe_allow_html=True)
+
+        with col_fut:
+            st.markdown("""
+            <div style="background:#F8FAFC; border:1px solid #E2E8F0; border-radius:8px; padding:12px; height:100%;">
+                <div style="color:#475569; font-weight:700; font-size:0.84rem; margin-bottom:6px;">
+                    🔮 FUTURE SCOPE (CONCEPTUAL)
+                </div>
+                <ul style="font-size:0.78rem; color:#475569; margin:0; padding-left:16px; line-height:1.5;">
+                    <li>Live network packet sniffing (eBPF/pyshark)</li>
+                    <li>Autonomous firewall blocking / packet drops</li>
+                    <li>Device isolation &amp; Zero Trust enforcement</li>
+                    <li>Deepfake and phishing email analysis</li>
+                    <li>Temporal sequence modeling (Bi-LSTM / Transformers)</li>
+                </ul>
+            </div>
+            """, unsafe_allow_html=True)
+
     _render_footer()
 
 
@@ -1299,23 +1354,38 @@ def page_ai_threat_detection() -> None:
                 label_visibility="collapsed",
             )
             if new_csv:
-                loaded_df, err = load_csv_bytes(new_csv.read())
-                if err:
-                    st.error(f"Error parsing file: {err}")
+                if new_csv.size > 200 * 1024 * 1024:
+                    st.error("Uploaded file exceeds 200 MB maximum size limit. Please upload a smaller file.")
                 else:
-                    st.session_state.raw_df = loaded_df
-                    st.session_state.data_source = f"Uploaded ({new_csv.name})"
-                    st.success(f"Loaded {len(loaded_df):,} records!")
-                    st.rerun()
+                    loaded_df, err = load_csv_bytes(new_csv.read())
+                    if err:
+                        st.error(f"Error parsing file: {err}")
+                    else:
+                        val_res = validate_dataframe(loaded_df, require_label=False)
+                        if not val_res.is_valid:
+                            st.error(f"Schema Validation Failed: {val_res.error_message}. Missing required columns: {val_res.missing_columns}. Please ensure your CSV includes all required flow features.")
+                        else:
+                            st.session_state.raw_df = loaded_df
+                            st.session_state.data_source = f"Uploaded ({new_csv.name})"
+                            st.success(f"Loaded {len(loaded_df):,} records successfully!")
+                            st.rerun()
 
-            sample_csv_data = generate_sample_csv(has_label=True, n_records=20)
-            st.download_button(
-                label="⬇ Download Sample CSV Template",
-                data=sample_csv_data,
-                file_name="sample_traffic_template.csv",
-                mime="text/csv",
-                use_container_width=True,
-            )
+            col_btn1, col_btn2 = st.columns(2)
+            with col_btn1:
+                sample_csv_data = generate_sample_csv(has_label=True, n_records=20)
+                st.download_button(
+                    label="⬇ CSV Template",
+                    data=sample_csv_data,
+                    file_name="sample_traffic_template.csv",
+                    mime="text/csv",
+                    use_container_width=True,
+                )
+            with col_btn2:
+                if st.button("⚡ Test 100-Flow Batch", use_container_width=True):
+                    demo_batch = generate_synthetic_dataset(n_benign=60, n_attack=40, random_state=101)
+                    st.session_state.raw_df = demo_batch
+                    st.session_state.data_source = "100-Flow Quick Evaluation Batch"
+                    st.rerun()
 
     # Prominent Execution Button
     st.markdown("<div style='margin-top: 6px;'></div>", unsafe_allow_html=True)
@@ -1753,6 +1823,18 @@ def page_model_performance() -> None:
     with c5:
         st.markdown(_render_metric_card("Weighted F1", f"{m['f1_weighted']:.4f}", "Frequency-adjusted", "blue", "network"), unsafe_allow_html=True)
 
+    # Methodological Callout Note (Academic Distinction)
+    st.markdown("""
+    <div style="background:#EFF6FF; border:1px solid #BFDBFE; border-left:4px solid #2563EB; border-radius:8px; padding:12px 16px; margin:14px 0 16px 0;">
+        <div style="color:#1E40AF; font-weight:700; font-size:0.86rem; margin-bottom:4px;">
+            ℹ️ Methodological Note on Random Forest Confidence Scores
+        </div>
+        <p style="color:#1E3A8A; font-size:0.80rem; margin:0; line-height:1.5;">
+            Model confidence scores represent the fraction of decision trees voting for a specific class (ensemble vote consensus) rather than calibrated Bayesian posterior probabilities. In high-stakes intrusion detection, raw ensemble consensus reflects empirical model agreement across 150 independent decision paths.
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
+
     t1, t2, t3, t4, t5 = st.tabs([
         "🎯 Confusion Matrix",
         "📋 Classification Report",
@@ -1817,6 +1899,18 @@ def page_security_recommendations() -> None:
         <p class="page-intro-desc">
             Actionable network and system defense principles covering authentication hardening, DoS defense,
             reconnaissance mitigation, and incident response.
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # Advisory Scope Notice
+    st.markdown("""
+    <div style="background:#F8FAFC; border:1px solid #E2E8F0; border-left:4px solid #64748B; border-radius:8px; padding:12px 16px; margin:14px 0 16px 0;">
+        <div style="color:#334155; font-weight:700; font-size:0.86rem; margin-bottom:4px;">
+            🛡️ Advisory &amp; Decision-Support Scope Notice
+        </div>
+        <p style="color:#475569; font-size:0.80rem; margin:0; line-height:1.5;">
+            The defensive recommendations and incident response workflows presented below serve as human-in-the-loop decision-support guidelines. In accordance with current prototype boundaries, this academic system operates in an advisory capacity and does not autonomously inject firewall rules, drop live packets, or enforce hardware isolation.
         </p>
     </div>
     """, unsafe_allow_html=True)
@@ -1940,6 +2034,121 @@ def page_about_project() -> None:
                 &bull; Deliver intuitive visual analytics and defensive recommendations for academic evaluation.
             </p>
             """, unsafe_allow_html=True)
+
+    # Technology Stack
+    with st.container(border=True):
+        code_icon = _svg_icon("terminal", size=17, color="#2563EB")
+        st.markdown(f'<div class="panel-card-header">{code_icon} System Technology Stack</div>', unsafe_allow_html=True)
+        tech_df = pd.DataFrame({
+            "Layer / Component": [
+                "Core Programming Language",
+                "Frontend Web Framework",
+                "Machine Learning Classifier",
+                "Data Sanitization & Ingestion",
+                "Numerical & Vector Operations",
+                "Interactive Data Visualization",
+                "Automated Test Infrastructure",
+            ],
+            "Technology": [
+                "Python",
+                "Streamlit",
+                "Scikit-Learn",
+                "Pandas",
+                "NumPy",
+                "Plotly",
+                "Pytest",
+            ],
+            "Version": [
+                "3.12+",
+                "1.40+",
+                "1.5.2+",
+                "2.2+",
+                "1.26+",
+                "5.24+",
+                "8.3+",
+            ],
+            "Architectural Role": [
+                "Execution runtime and modular backend processing pipeline",
+                "Reactive academic UI, full-width navigation, and dashboard layouts",
+                "Random Forest ensemble classifier (150 estimators, balanced weights)",
+                "Network flow tabular sanitization, schema verification, and metrics formatting",
+                "Array mathematics and vectorized normalization computations",
+                "Interactive confusion matrices, ROC curves, and class distributions",
+                "84+ automated unit, integration, and mathematical invariant tests",
+            ],
+        })
+        st.dataframe(tech_df, use_container_width=True)
+
+    # Prototype Scope & Implementation Boundaries
+    with st.container(border=True):
+        scope_icon = _svg_icon("shield", size=17, color="#2563EB")
+        st.markdown(f'<div class="panel-card-header">{scope_icon} Prototype Scope &amp; Implementation Boundaries</div>', unsafe_allow_html=True)
+        col_imp, col_prop, col_fut = st.columns(3)
+
+        with col_imp:
+            st.markdown("""
+            <div style="background:#F0FDF4; border:1px solid #BBF7D0; border-radius:8px; padding:14px; height:100%;">
+                <div style="color:#166534; font-weight:700; font-size:0.84rem; margin-bottom:6px;">
+                    ✅ IMPLEMENTED IN PROTOTYPE
+                </div>
+                <ul style="font-size:0.78rem; color:#14532D; margin:0; padding-left:16px; line-height:1.5;">
+                    <li>5-Class Random Forest classifier (150 trees)</li>
+                    <li>Stratified 75/25 train-test empirical evaluation</li>
+                    <li>Batch CSV upload with schema validation</li>
+                    <li>Decision tree ensemble consensus scoring</li>
+                    <li>Heuristic rule-based anomaly detection</li>
+                    <li>Interactive multi-class telemetry dashboards</li>
+                </ul>
+            </div>
+            """, unsafe_allow_html=True)
+
+        with col_prop:
+            st.markdown("""
+            <div style="background:#EFF6FF; border:1px solid #BFDBFE; border-radius:8px; padding:14px; height:100%;">
+                <div style="color:#1E40AF; font-weight:700; font-size:0.84rem; margin-bottom:6px;">
+                    🔄 PROPOSED FRAMEWORK
+                </div>
+                <ul style="font-size:0.78rem; color:#1E3A8A; margin:0; padding-left:16px; line-height:1.5;">
+                    <li>Human-in-the-loop analyst triage workflow</li>
+                    <li>Standardized incident advisory playbooks</li>
+                    <li>Forensic filter &amp; CSV report export</li>
+                    <li>Multi-source telemetry ingestion pipeline</li>
+                    <li>Analytic explanation of classified threats</li>
+                </ul>
+            </div>
+            """, unsafe_allow_html=True)
+
+        with col_fut:
+            st.markdown("""
+            <div style="background:#F8FAFC; border:1px solid #E2E8F0; border-radius:8px; padding:14px; height:100%;">
+                <div style="color:#475569; font-weight:700; font-size:0.84rem; margin-bottom:6px;">
+                    🔮 FUTURE SCOPE (CONCEPTUAL)
+                </div>
+                <ul style="font-size:0.78rem; color:#475569; margin:0; padding-left:16px; line-height:1.5;">
+                    <li>Live network packet sniffing (eBPF/pyshark)</li>
+                    <li>Autonomous firewall blocking / packet drops</li>
+                    <li>Device isolation &amp; Zero Trust enforcement</li>
+                    <li>Deepfake and phishing email analysis</li>
+                    <li>Temporal sequence modeling (Bi-LSTM / Transformers)</li>
+                </ul>
+            </div>
+            """, unsafe_allow_html=True)
+
+    # Academic Scope & Evaluator Guidelines for Seminar Viva
+    with st.container(border=True):
+        st.markdown("""
+        <h4 style="color:#102A56; margin-top:0;">🎓 Academic Scope &amp; Evaluator Guidelines for Seminar Viva</h4>
+        <div style="color:#526784; font-size:0.84rem; line-height:1.6;">
+            <p><strong>Key Discussion Points for Faculty Evaluators:</strong></p>
+            <ul style="margin:0; padding-left:18px;">
+                <li><strong>Empirical Rigor:</strong> All accuracy, precision, recall, and F1 metrics are computed dynamically on held-out test records (25% stratified split); no metric is hardcoded or fabricated.</li>
+                <li><strong>Dataset Transparency:</strong> The baseline benchmark uses synthetically generated network flow data modeling CIC-IDS2017 distribution parameters. True production IDS requires field packet validation.</li>
+                <li><strong>Explainability &amp; Feature Importance:</strong> Random Forest feature importances clearly show the primary discriminative flow metrics (packet lengths, flow duration, SYN/ACK ratios).</li>
+                <li><strong>Tree Vote Consensus:</strong> Probability scores represent the proportion of 150 decision trees agreeing on a classification, providing an interpretable measure of model certainty.</li>
+                <li><strong>Human-in-the-Loop Philosophy:</strong> AI acts as an advisory triage accelerator; final remediation actions remain strictly under human security analyst authority.</li>
+            </ul>
+        </div>
+        """, unsafe_allow_html=True)
 
     _render_footer()
 

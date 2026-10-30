@@ -1,46 +1,59 @@
 flowchart TD
-    A([🖥️ User / Analyst]) --> B[Streamlit Web Interface]
+    subgraph S1["1. Data Input Layer"]
+        A["User / Security Analyst"] --> UI["Streamlit Web Interface"]
+        UI --> DS1["Synthetic Dataset Generator (1,000+ Flows)"]
+        UI --> DS2["Custom Batch CSV Upload (Max 200MB)"]
+    end
 
-    B --> C{Data Source}
-    C -->|Synthetic| D[Synthetic Dataset Generator]
-    C -->|Upload| E[CSV File Upload]
+    subgraph S2["2. Data Preprocessing &amp; Validation"]
+        DS1 --> PRE["Data Sanitization &amp; Type Coercion"]
+        DS2 --> PRE
+        PRE --> VAL{"Schema &amp; Feature Validation"}
+        VAL -->|❌ Invalid Schema| ERR["Explicit Error &amp; Schema Guidance"]
+        ERR --> UI
+        VAL -->|✅ Valid Schema| COL["ColumnTransformer (StandardScaler + OneHotEncoder)"]
+    end
 
-    D --> F[Data Validation Layer]
-    E --> F
+    subgraph S3["3. Machine Learning Classification"]
+        COL --> SPLIT{"Has Labels for Training?"}
+        SPLIT -->|Yes| TRAIN["Stratified Split (75% Train / 25% Test)"]
+        TRAIN --> RF["Random Forest Classifier (150 Trees, Balanced Weights)"]
+        RF --> EVAL["Held-Out Empirical Test Evaluation"]
+        SPLIT -->|No (Batch Ingestion)| PRED["Batch Prediction Engine"]
+        RF --> PRED
+        PRED --> VOTE["Tree Ensemble Consensus &amp; Risk Scoring"]
+    end
 
-    F --> G{Valid?}
-    G -->|❌ Invalid| H[Error Message + Guidance]
-    H --> B
-    G -->|✅ Valid| I[Data Preprocessing Pipeline]
+    subgraph S4["4. Threat Classification Output"]
+        VOTE --> C1["BENIGN (Normal Connection Traffic)"]
+        VOTE --> C2["DoS (Denial of Service)"]
+        VOTE --> C3["DDoS (Distributed Denial of Service)"]
+        VOTE --> C4["PortScan (Network Reconnaissance)"]
+        VOTE --> C5["BruteForce (Credential Attacks)"]
+    end
 
-    I --> J[Feature Extraction\nColumnTransformer]
-    J --> K{Has Labels?}
+    subgraph S5["5. Risk Information &amp; Visualisation"]
+        EVAL --> DASH1["Model Evaluation Dashboard (Acc, F1, Confusion Matrix, FP/FN)"]
+        C1 & C2 & C3 & C4 & C5 --> DASH2["Interactive Telemetry &amp; Anomaly Dashboard"]
+        C1 & C2 & C3 & C4 & C5 --> DASH3["Threat Distribution &amp; Flow Inspection"]
+        DASH1 & DASH2 & DASH3 --> UI
+    end
 
-    K -->|✅ Labelled| L[Stratified Train/Test Split\n75% train · 25% test]
-    K -->|❌ No Labels| M[Prediction-Only Mode]
+    subgraph S6["6. Defensive Recommendations (Implemented Advisory)"]
+        DASH2 --> REC["Security Recommendations &amp; Response Playbooks"]
+        REC --> REV["Human-in-the-Loop Analyst Triage (Advisory Support)"]
+    end
 
-    L --> N[Random Forest Training\n150 trees · balanced weights]
-    N --> O[Held-Out Test Evaluation]
-    O --> P[Metrics: Acc · Prec · Rec · F1\nConfusion Matrix · FP/FN]
+    subgraph S7["7. Proposed Extensions &amp; Future Scope"]
+        REV -.->|Proposed Extension| EXP["Forensic Incident Report Export"]
+        REV -.->|Future Scope (Conceptual)| SNIFF["Live Packet Sniffing (eBPF / pyshark)"]
+        REV -.->|Future Scope (Conceptual)| BLK["Autonomous Firewall Blocking / Isolation"]
+    end
 
-    M --> Q[Apply Trained Model]
-    O --> Q
-    Q --> R[Prediction Results\nLabel · Risk Level · Confidence]
-
-    P --> S[Dashboard Visualisations]
-    R --> S
-
-    S --> T[Threat Analysis View]
-    S --> U[Model Evaluation View]
-    S --> V[Security Insights View]
-
-    T --> W([Analyst Review\n⚠️ Human decision required])
-    U --> W
-    V --> W
-
-    style A fill:#0f2040,color:#00d4ff,stroke:#00d4ff
-    style W fill:#0f2040,color:#00d4ff,stroke:#00d4ff
-    style H fill:#3a1020,color:#ff4b6e,stroke:#ff4b6e
-    style N fill:#0f2040,color:#00cc6a,stroke:#00cc6a
-    style O fill:#0f2040,color:#00d4ff,stroke:#00d4ff
-
+    style A fill:#EFF6FF,stroke:#2563EB,color:#1E40AF
+    style UI fill:#FFFFFF,stroke:#2563EB,color:#0F2747
+    style RF fill:#EFF6FF,stroke:#2563EB,color:#1E40AF
+    style ERR fill:#FEF2F2,stroke:#DC2626,color:#991B1B
+    style REV fill:#F0FDF4,stroke:#16A34A,color:#166534
+    style SNIFF fill:#F8FAFC,stroke:#94A3B8,color:#64748B,stroke-dasharray: 5 5
+    style BLK fill:#F8FAFC,stroke:#94A3B8,color:#64748B,stroke-dasharray: 5 5

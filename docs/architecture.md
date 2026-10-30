@@ -58,7 +58,7 @@ flowchart TD
 
 | Module | Core Responsibility | Key Classes / Functions |
 |---|---|---|
-| `app.py` | UI layout, state orchestration, routing | `main()`, `page_overview()`, `page_detection_lab()` |
+| `app.py` | UI layout, state orchestration, routing | `main()`, `page_home()`, `page_ai_threat_detection()`, `PAGE_ROUTER` |
 | `src/data_processing.py` | Validation, cleaning, synthetic data creation | `generate_synthetic_dataset()`, `validate_dataframe()`, `preprocess_dataframe()` |
 | `src/model.py` | Pipeline assembly, training, persistence | `build_pipeline()`, `train_model()`, `predict()`, `get_feature_importance()` |
 | `src/detection.py` | Workflow orchestration, batch risk scoring | `run_training()`, `run_evaluation()`, `run_prediction()`, `get_threat_summary()` |

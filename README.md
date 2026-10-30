@@ -75,7 +75,7 @@ At the same time, this project demystifies AI in cybersecurity: it demonstrates 
 - **Multi-Vector Discrimination**: Classify connection flows across multiple categories: `BENIGN`, `DoS`, `DDoS`, `PortScan`, and `BruteForce`.
 - **Honest Evaluation**: Compute and display authentic performance metrics directly from held-out test splits (no hardcoded scores or fabricated benchmark claims).
 - **Interpretability**: Extract and visualize global feature importances to reveal the decision logic of the classifier.
-- **Analyst-Centric UX**: Deliver a modern, dark-themed Streamlit interface featuring risk gauges, interactive confusion matrices, and clear navigation.
+- **Analyst-Centric UX**: Deliver a modern, clean blue and white academic Streamlit interface featuring risk indicators, interactive confusion matrices, full-width navigation, and intuitive dashboards.
 
 ---
 
@@ -111,41 +111,55 @@ $$\text{Data Ingestion} \longrightarrow \text{Validation \& Cleaning} \longright
 
 ```mermaid
 flowchart TD
-    User([Security Analyst]) --> UI[Streamlit Web Interface]
-
-    subgraph Ingestion & Validation
-        UI -->|Generate Demo| SynGen[Synthetic Dataset Generator]
-        UI -->|Upload CSV| CSVParser[CSV Ingestion Engine]
-        SynGen --> Preproc[Data Sanitization & Preprocessing]
-        CSVParser --> Preproc
-        Preproc --> Validator{Schema Validator}
-        Validator -->|Invalid| UIError[Error Guidance Screen]
-        Validator -->|Valid| FeatureEngine[Feature Splitter & Transformer]
+    subgraph S1["1. Data Input Layer"]
+        A["User / Security Analyst"] --> UI["Streamlit Web Interface"]
+        UI --> DS1["Synthetic Dataset Generator (1,000+ Flows)"]
+        UI --> DS2["Custom Batch CSV Upload (Max 200MB)"]
     end
 
-    subgraph Machine Learning Core
-        FeatureEngine --> Splitter[Stratified 75/25 Split]
-        Splitter --> XTrain[Training Partition]
-        Splitter --> XTest[Held-Out Test Partition]
-        XTrain --> Pipe[ColumnTransformer + RandomForest]
-        Pipe --> FittedModel[Trained Pipeline]
+    subgraph S2["2. Data Preprocessing & Validation"]
+        DS1 --> PRE["Data Sanitization & Type Coercion"]
+        DS2 --> PRE
+        PRE --> VAL{"Schema & Feature Validation"}
+        VAL -->|❌ Invalid Schema| ERR["Explicit Error & Guidance"]
+        ERR --> UI
+        VAL -->|✅ Valid Schema| COL["ColumnTransformer (StandardScaler + OneHotEncoder)"]
     end
 
-    subgraph Diagnostics & Triage
-        FittedModel --> Evaluator[Evaluation Engine]
-        XTest --> Evaluator
-        Evaluator --> Metrics[Computed Metrics & Confusion Matrix]
-        
-        UI -->|New Records| BatchPredict[Prediction Engine]
-        BatchPredict --> FittedModel
-        BatchPredict --> RiskScorer[Risk Level & Confidence Calculator]
+    subgraph S3["3. Machine Learning Classification"]
+        COL --> SPLIT{"Has Labels for Training?"}
+        SPLIT -->|Yes| TRAIN["Stratified Split (75% Train / 25% Test)"]
+        TRAIN --> RF["Random Forest Classifier (150 Trees, Balanced Weights)"]
+        RF --> EVAL["Held-Out Empirical Test Evaluation"]
+        SPLIT -->|No (Batch Ingestion)| PRED["Batch Prediction Engine"]
+        RF --> PRED
+        PRED --> VOTE["Tree Ensemble Consensus & Risk Scoring"]
     end
 
-    subgraph Visual Analytics
-        Metrics --> DashView[Model Evaluation Dashboard]
-        RiskScorer --> ThreatView[Threat Analysis Dashboard]
-        DashView --> UI
-        ThreatView --> UI
+    subgraph S4["4. Threat Classification Output"]
+        VOTE --> C1["BENIGN (Normal Connection Traffic)"]
+        VOTE --> C2["DoS (Denial of Service)"]
+        VOTE --> C3["DDoS (Distributed Denial of Service)"]
+        VOTE --> C4["PortScan (Network Reconnaissance)"]
+        VOTE --> C5["BruteForce (Credential Attacks)"]
+    end
+
+    subgraph S5["5. Risk Information & Visualisation"]
+        EVAL --> DASH1["Model Evaluation Dashboard (Acc, F1, Confusion Matrix, FP/FN)"]
+        C1 & C2 & C3 & C4 & C5 --> DASH2["Interactive Telemetry & Anomaly Dashboard"]
+        C1 & C2 & C3 & C4 & C5 --> DASH3["Threat Distribution & Flow Inspection"]
+        DASH1 & DASH2 & DASH3 --> UI
+    end
+
+    subgraph S6["6. Defensive Recommendations (Implemented Advisory)"]
+        DASH2 --> REC["Security Recommendations & Response Playbooks"]
+        REC --> REV["Human-in-the-Loop Analyst Triage (Advisory Support)"]
+    end
+
+    subgraph S7["7. Proposed Extensions & Future Scope"]
+        REV -.->|Proposed Extension| EXP["Forensic Incident Report Export"]
+        REV -.->|Future Scope (Conceptual)| SNIFF["Live Packet Sniffing (eBPF / pyshark)"]
+        REV -.->|Future Scope (Conceptual)| BLK["Autonomous Firewall Blocking / Isolation"]
     end
 ```
 
@@ -196,14 +210,14 @@ flowchart TD
 ## Repository Structure
 
 ```
-Seminar---Rushikesh-Nirmal/
+Seminar-Prototype/
 ├── app.py                      # Main Streamlit dashboard application
 ├── requirements.txt            # Pinned, reproducible project dependencies
 ├── README.md                   # Comprehensive repository documentation
 ├── LICENSE                     # MIT Open Source License
 ├── .gitignore                  # Git exclusion rules (caches, models, data)
 ├── .streamlit/
-│   └── config.toml             # Streamlit dark cybersecurity theme configuration
+│   └── config.toml             # Streamlit modern light blue and white academic theme configuration
 ├── src/
 │   ├── __init__.py             # Package marker
 │   ├── data_processing.py      # Validation, sanitization, synthetic generation
@@ -285,18 +299,18 @@ The application will start locally and open in your default browser at `http://l
 ## How to Use the Application
 
 ### 1. Using Demonstration Data (Recommended for Quick Evaluation)
-1. In the sidebar, select **🏠 Overview** or **🧪 AI Detection Lab**.
-2. Click **"🔬 Load Demo Dataset"** or **"🔬 Generate Synthetic Dataset"**.
-3. Navigate to **🧪 AI Detection Lab** and click **"🚀 Train Classifier"**.
+1. In the sidebar, click on **Home** or **AI Threat Detection**.
+2. Click **"🚀 Load Demo Dataset & Train Baseline"** (if not already trained) or **"⚡ Test 100-Flow Batch"**.
+3. Navigate to **AI Threat Detection** and click **"⚡ Execute Machine Learning Analysis"**.
 4. The pipeline performs an automated stratified split, fits 150 decision trees, and computes real metrics on the held-out test split.
-5. Review the resulting classification report, confusion matrix, and feature importances under **⚠️ Threat Analysis** and **📊 Model Evaluation**.
+5. Review the resulting classification report, confusion matrix, and feature importances under **Model Performance** and telemetry insights under **Network Traffic Analysis**.
 
 ### 2. Uploading a Custom CSV Dataset
-1. Prepare a CSV file containing the expected 20 flow features (refer to [data/README.md](data/README.md) for the exact schema).
-2. Go to **🔍 Data Explorer** or **🧪 AI Detection Lab**.
-3. Upload the file using the file uploader widget.
-4. If a `label` column is present, the app will enable training and full evaluation.
-5. If the file is unlabelled, the model will run in **Prediction-Only Mode**, assigning predicted threat labels and risk categories to each row.
+1. Prepare a CSV file containing connection flow features (refer to [data/README.md](data/README.md) or download the template).
+2. Go to **AI Threat Detection**.
+3. Upload the file using the file uploader widget (or click **"⬇ CSV Template"** to inspect the required format).
+4. The system validates the schema against required columns before execution.
+5. Click **"⚡ Execute Machine Learning Analysis"** to evaluate predictions, inspect model confidence scores, and review defensive recommendations.
 
 ---
 
