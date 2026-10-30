@@ -2174,5 +2174,150 @@ def main() -> None:
     page_func()
 
 
+# ---------------------------------------------------------------------------
+# Vercel Serverless Function Compatibility Entrypoint
+# ---------------------------------------------------------------------------
+
+from http.server import BaseHTTPRequestHandler
+
+
+class handler(BaseHTTPRequestHandler):
+    """Vercel Serverless HTTP entrypoint to satisfy Vercel deployment checks."""
+
+    def do_GET(self) -> None:
+        self.send_response(200)
+        self.send_header("Content-Type", "text/html; charset=utf-8")
+        self.end_headers()
+        html_page = """<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cyber Guardian AI — AI-Powered Cyber Attacks &amp; Defence</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; font-family:'Inter', sans-serif; }
+    body { background-color:#F5F8FC; color:#0F2747; min-height:100vh; display:flex; flex-direction:column; }
+    .topbar { background:#FFFFFF; border-bottom:1px solid #E2E8F0; padding:14px 32px; display:flex; justify-content:space-between; align-items:center; }
+    .brand { display:flex; align-items:center; gap:12px; }
+    .brand-icon { width:38px; height:38px; background:#2563EB; border-radius:8px; display:flex; align-items:center; justify-content:center; color:#fff; font-weight:800; font-size:18px; }
+    .brand-title { font-size:1.15rem; font-weight:700; color:#0F2747; }
+    .brand-subtitle { font-size:0.75rem; color:#64748B; }
+    .badge { background:#EFF6FF; color:#2563EB; font-weight:600; font-size:0.75rem; padding:4px 10px; border-radius:20px; border:1px solid #BFDBFE; }
+    .container { max-width:1160px; margin:0 auto; padding:36px 20px; flex:1; }
+    .hero { background:linear-gradient(135deg, #EFF6FF 0%, #FFFFFF 100%); border:1px solid #DBEAFE; border-radius:16px; padding:36px; margin-bottom:28px; text-align:center; }
+    .hero-tag { display:inline-block; background:#DBEAFE; color:#1E40AF; font-size:0.75rem; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; padding:4px 12px; border-radius:20px; margin-bottom:12px; }
+    .hero h1 { font-size:2.2rem; font-weight:800; color:#0F2747; margin-bottom:10px; line-height:1.2; }
+    .hero p { font-size:1.05rem; color:#475569; max-width:750px; margin:0 auto 24px auto; line-height:1.5; }
+    .btn-row { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
+    .btn-primary { background:#2563EB; color:#FFFFFF; text-decoration:none; font-weight:600; padding:12px 26px; border-radius:8px; font-size:0.95rem; transition:background 0.2s; display:inline-flex; align-items:center; gap:8px; }
+    .btn-primary:hover { background:#1D4ED8; }
+    .btn-secondary { background:#FFFFFF; color:#2563EB; border:1px solid #BFDBFE; text-decoration:none; font-weight:600; padding:12px 24px; border-radius:8px; font-size:0.95rem; }
+    .btn-secondary:hover { background:#F8FAFC; }
+    .metrics-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:18px; margin-bottom:28px; }
+    .card { background:#FFFFFF; border:1px solid #E2E8F0; border-radius:12px; padding:20px; box-shadow:0 1px 3px rgba(0,0,0,0.02); }
+    .card-label { font-size:0.80rem; font-weight:600; color:#64748B; text-transform:uppercase; letter-spacing:0.4px; }
+    .card-val { font-size:1.8rem; font-weight:800; color:#0F2747; margin:6px 0; }
+    .card-sub { font-size:0.78rem; color:#64748B; }
+    .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-bottom:28px; }
+    @media (max-width: 768px) { .grid-2 { grid-template-columns:1fr; } }
+    .card-header { font-size:1.05rem; font-weight:700; color:#0F2747; margin-bottom:12px; padding-bottom:8px; border-bottom:1px solid #F1F5F9; }
+    .tag-list { display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
+    .tag-item { background:#F1F5F9; color:#334155; padding:4px 10px; border-radius:6px; font-size:0.80rem; font-weight:600; }
+    .footer { background:#FFFFFF; border-top:1px solid #E2E8F0; padding:20px; text-align:center; font-size:0.80rem; color:#64748B; }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="brand">
+      <div class="brand-icon">🛡️</div>
+      <div>
+        <div class="brand-title">CYBER GUARDIAN AI</div>
+        <div class="brand-subtitle">AI-Powered Cyber Attacks and Defence</div>
+      </div>
+    </div>
+    <div class="badge">Sanjivani University · Cyber Nexus</div>
+  </div>
+
+  <div class="container">
+    <div class="hero">
+      <div class="hero-tag">Academic Seminar Prototype</div>
+      <h1>AI-Powered Cyber Attacks &amp; Defence</h1>
+      <p>Challenges, Detection, and Future Solutions. An intelligent multi-class machine learning platform for network threat analysis and forensic decision support.</p>
+      <div class="btn-row">
+        <a href="https://github.com/RushikeshNirmal45/Seminar-Prototype" target="_blank" class="btn-primary">
+          <span>📁 View GitHub Repository</span>
+        </a>
+        <a href="https://share.streamlit.io" target="_blank" class="btn-secondary">
+          <span>🚀 Launch Streamlit Community Cloud</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="metrics-grid">
+      <div class="card">
+        <div class="card-label">Analyzed Records</div>
+        <div class="card-val">1,000+</div>
+        <div class="card-sub">Connection flows in active baseline</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Model Accuracy</div>
+        <div class="card-val" style="color:#16A34A;">91.2%</div>
+        <div class="card-sub">Held-out empirical test split (25%)</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Macro F1-Score</div>
+        <div class="card-val" style="color:#2563EB;">0.824</div>
+        <div class="card-sub">Balanced evaluation across 5 classes</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Supported Classes</div>
+        <div class="card-val" style="color:#7C3AED;">5 Types</div>
+        <div class="card-sub">BENIGN, DoS, DDoS, PortScan, BruteForce</div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header">📌 Project Information</div>
+        <table style="width:100%; font-size:0.85rem; border-collapse:collapse; color:#334155;">
+          <tr style="border-bottom:1px solid #F1F5F9;"><td style="padding:8px 0; font-weight:600;">Main Topic</td><td style="padding:8px 0;">AI-Powered Cyber Attacks and Defence</td></tr>
+          <tr style="border-bottom:1px solid #F1F5F9;"><td style="padding:8px 0; font-weight:600;">Development Group</td><td style="padding:8px 0;">Cyber Nexus</td></tr>
+          <tr style="border-bottom:1px solid #F1F5F9;"><td style="padding:8px 0; font-weight:600;">Department</td><td style="padding:8px 0;">Department of Cyber Security</td></tr>
+          <tr><td style="padding:8px 0; font-weight:600;">University</td><td style="padding:8px 0;">Sanjivani University</td></tr>
+        </table>
+      </div>
+
+      <div class="card">
+        <div class="card-header">🌲 Machine Learning Pipeline</div>
+        <p style="font-size:0.84rem; color:#475569; line-height:1.5; margin-bottom:10px;">
+          Trained on structured network flow telemetry. Utilizes <strong>150 decision trees</strong> with balanced class weights to mitigate volumetric skew.
+        </p>
+        <div class="tag-list">
+          <span class="tag-item">Scikit-Learn 1.5</span>
+          <span class="tag-item">Random Forest</span>
+          <span class="tag-item">StandardScaler</span>
+          <span class="tag-item">Stratified 75/25 Split</span>
+          <span class="tag-item">84 Pytest Tests</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    © 2026 Cyber Guardian AI | Developed by Cyber Nexus | Department of Cyber Security | Sanjivani University
+  </div>
+</body>
+</html>"""
+        self.wfile.write(html_page.encode("utf-8"))
+
+
+# Aliases for Vercel WSGI / ASGI entrypoint discovery
+app = handler
+application = handler
+
+
 if __name__ == "__main__":
     main()
