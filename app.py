@@ -1361,9 +1361,9 @@ def page_ai_threat_detection() -> None:
                     if err:
                         st.error(f"Error parsing file: {err}")
                     else:
-                        val_res = validate_dataframe(loaded_df, require_label=False)
-                        if not val_res.is_valid:
-                            st.error(f"Schema Validation Failed: {val_res.error_message}. Missing required columns: {val_res.missing_columns}. Please ensure your CSV includes all required flow features.")
+                        val_df, val_err = validate_dataframe(loaded_df, require_label=False)
+                        if val_err:
+                            st.error(f"Schema Validation Failed: {val_err}")
                         else:
                             st.session_state.raw_df = loaded_df
                             st.session_state.data_source = f"Uploaded ({new_csv.name})"

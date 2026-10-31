@@ -28,3 +28,4 @@ HEALTHCHECK CMD curl --fail http://localhost:${PORT:-8501}/_stcore/health || exi
 
 # Launch Streamlit app binding to all interfaces and respecting platform $PORT
 CMD ["sh", "-c", "streamlit run app.py --server.port=${PORT:-8501} --server.address=0.0.0.0 --server.headless=true --server.enableCORS=false --server.enableXsrfProtection=false"]
+
